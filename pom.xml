@@ -15,6 +15,8 @@
     <description>gen_ai_training</description>
     <properties>
         <java.version>17</java.version>
+        <semantic-kernel.version>1.4.0</semantic-kernel.version>
+        <mockito.version>5.16.0</mockito.version>
     </properties>
     <dependencies>
         <dependency>
@@ -24,11 +26,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.azure</groupId>
-            <artifactId>azure-ai-openai</artifactId>
-            <version>1.0.0-beta.14</version>
         </dependency>
 
         <dependency>
@@ -44,26 +41,22 @@
         </dependency>
 
         <dependency>
-            <groupId>com.microsoft.semantic-kernel</groupId>
-            <artifactId>semantickernel-aiservices-openai</artifactId>
-            <version>1.4.2</version>
+            <groupId>com.azure</groupId>
+            <artifactId>azure-ai-openai</artifactId>
+            <version>1.0.0-beta.14</version>
         </dependency>
+
         <dependency>
             <groupId>com.microsoft.semantic-kernel</groupId>
             <artifactId>semantickernel-api</artifactId>
-            <version>1.4.2</version>
+            <version>${semantic-kernel.version}</version>
         </dependency>
         <dependency>
             <groupId>com.microsoft.semantic-kernel</groupId>
-            <artifactId>semantickernel-experimental</artifactId>
-            <version>1.4.2</version>
+            <artifactId>semantickernel-aiservices-openai</artifactId>
+            <version>${semantic-kernel.version}</version>
         </dependency>
-        <dependency>
-            <groupId>com.microsoft.semantic-kernel</groupId>
-            <artifactId>semantickernel-bom</artifactId>
-            <version>1.4.2</version>
-            <type>pom</type>
-        </dependency>
+
         <dependency>
             <groupId>io.qdrant</groupId>
             <artifactId>client</artifactId>
@@ -89,16 +82,24 @@
             <artifactId>protobuf-java</artifactId>
             <version>4.29.3</version>
         </dependency>
+
+
+        <!-- https://mvnrepository.com/artifact/org.mockito/mockito-junit-jupiter -->
         <dependency>
-            <groupId>com.microsoft.semantic-kernel</groupId>
-            <artifactId>semantickernel-settings-loader</artifactId>
-            <version>0.2.13-alpha</version>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <version>${mockito.version}</version>
+            <scope>test</scope>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.mockito/mockito-core -->
         <dependency>
-            <groupId>com.azure</groupId>
-            <artifactId>azure-ai-openai</artifactId>
-            <version>1.0.0-beta.11</version>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>${mockito.version}</version>
+            <scope>test</scope>
         </dependency>
+
     </dependencies>
 
     <build>
@@ -113,6 +114,19 @@
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <argLine>
+                        @{argLine}
+                        -javaagent:"${settings.localRepository}/org/mockito/mockito-core/${mockito.version}/mockito-core-${mockito.version}.jar"
+                    </argLine>
+                    <systemPropertyVariables>
+                        <mockito.version>${mockito.version}</mockito.version>
+                    </systemPropertyVariables>
                 </configuration>
             </plugin>
         </plugins>
